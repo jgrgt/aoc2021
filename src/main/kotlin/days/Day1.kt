@@ -15,3 +15,9 @@ class Day1 : Day(1) {
             .last()
     }
 }
+
+class DepthIncreaseCounter {
+    fun count(depths: List<Int>) : Int{
+        return 0
+    }
+}

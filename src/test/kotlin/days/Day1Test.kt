@@ -9,17 +9,21 @@ import org.junit.jupiter.api.Test
 class Day1Test {
 
     private val dayOne = Day1()
+    private val counter = DepthIncreaseCounter()
 
     @Test
-    fun testPartOne() {
-        assertThat(dayOne.partOne(), `is`("THIS IS"))
+    fun emptyListGives0() {
+        assertThat(counter.count(emptyList()), `is`(0))
     }
-
-    @Test
-    fun testPartTwo() {
-        val partTwo = dayOne.partTwo()
-        assertThat(partTwo, notNullValue())
-        assertThat(partTwo, instanceOf(String::class.java))
-        assertThat(partTwo, `is`("FILE"))
-    }
+//    fun testPartOne() {
+//        assertThat(dayOne.partOne(), `is`("THIS IS"))
+//    }
+//
+//    @Test
+//    fun testPartTwo() {
+//        val partTwo = dayOne.partTwo()
+//        assertThat(partTwo, notNullValue())
+//        assertThat(partTwo, instanceOf(String::class.java))
+//        assertThat(partTwo, `is`("FILE"))
+//    }
 }
