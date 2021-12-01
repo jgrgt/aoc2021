@@ -10,11 +10,15 @@ class Day1 : Day(1) {
     }
 
     override fun partTwo(): Any {
-        return inputString.split("\n")
-            .filterNot { it.isEmpty() }
-            .map { it.uppercase() }
-            .last()
+        val depths = inputList.map { it.toInt() }
+        val increases = DepthIncreaseCounter.count(smoother(depths))
+        println("Increases: $increases")
+        return increases
     }
+}
+
+fun smoother(depths: List<Int>): List<Int> {
+    return depths.windowed(3, 1, false).map { it.sum() }
 }
 
 data class DepthIncreaseCounter(val count: Int = 0, val previous: Int) {
