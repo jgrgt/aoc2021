@@ -20,6 +20,12 @@ internal class Day6Test {
     }
 
     @Test
+    fun testExample256Days() {
+        val result = underTest.p1(listOf("3,4,3,1,2"), 256)
+        assertThat(result, `is`(26984457539))
+    }
+
+    @Test
     fun testNextDay() {
         val result = underTest.nextDay(listOf(3, 4, 3, 1, 2))
         val expectedList = listOf(2, 3, 2, 0, 1)
