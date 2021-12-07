@@ -8,7 +8,19 @@ abstract class Day(dayNumber: Int) {
     protected val inputList: List<String> by lazy { InputReader.getInputAsList(dayNumber) }
     protected val inputString: String by lazy { InputReader.getInputAsString(dayNumber) }
 
-    abstract fun partOne(): Any
+    open fun partOne(): Any {
+        return runPartOne(inputList)
+    }
 
-    abstract fun partTwo(): Any
+    open fun runPartOne(lines: List<String>): Any {
+        return 0
+    }
+
+    open fun partTwo(): Any {
+        return runPartTwo(inputList)
+    }
+
+    open fun runPartTwo(lines: List<String>): Any {
+        return 0
+    }
 }
