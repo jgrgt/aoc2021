@@ -20,4 +20,18 @@ internal class Day9Test {
         )
         assertThat(risk, `is`(15))
     }
+
+    @Test
+    fun example2() {
+        val risk = underTest.runPartTwo(
+            """
+            2199943210
+            3987894921
+            9856789892
+            8767896789
+            9899965678
+        """.trimIndent().lines()
+        )
+        assertThat(risk, `is`(1134))
+    }
 }
