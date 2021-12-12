@@ -26,6 +26,33 @@ class Day12 : Day(12) {
             return x.flatten()
         }
 
+        /**
+         * Avoid 'lower case' nodes being used twice!
+         */
+        fun paths2(current: List<MutableNode<String>>, end: MutableNode<String>): List<List<MutableNode<String>>> {
+            val candidates = current.last().next
+            // remove invalid candidates: start, end, and lower case nodes if any lower case node was used twice
+            val lowerCaseCurrent = current.map { it.value }.filter { it[0].isLowerCase() }
+            val hasDuplicateLowerCaseCurrent = lowerCaseCurrent.toSet().size < lowerCaseCurrent.size
+            val filteredCandidates = candidates.filter { c ->
+                val value = c.value
+                value != "start" && if (hasDuplicateLowerCaseCurrent) {
+                    !lowerCaseCurrent.contains(value)
+                } else {
+                    true
+                }
+            }
+            val x = filteredCandidates.map { next ->
+                val newCurrent = current + listOf(next)
+                if (next == end) {
+                    listOf(newCurrent)
+                } else {
+                    paths2(newCurrent, end)
+                }
+            }
+            return x.flatten()
+        }
+
         fun buildTree(lines: List<String>): MutableTree<String> {
             val sep = "-"
             val grouped = lines.map {
@@ -57,6 +84,14 @@ class Day12 : Day(12) {
         val start = tree.root
         val end = tree.getNode("end")
         val endPaths = paths(listOf(start), end)
+        return endPaths.size
+    }
+
+    override fun runPartTwo(lines: List<String>): Any {
+        val tree = buildTree(lines)
+        val start = tree.root
+        val end = tree.getNode("end")
+        val endPaths = paths2(listOf(start), end)
         return endPaths.size
     }
 }

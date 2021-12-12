@@ -17,6 +17,10 @@ class MutableTree<T>(val root: MutableNode<T>, private val nodes: List<MutableNo
             val filtered = nextNodes.filter { !next.contains(it) }
             next.addAll(filtered)
         }
+
+        override fun toString(): String {
+            return "MutableNode(value=$value)"
+        }
     }
 }
 

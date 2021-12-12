@@ -2,6 +2,7 @@ package days
 
 import days.Day12.Companion.buildTree
 import days.Day12.Companion.paths
+import days.Day12.Companion.paths2
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -165,5 +166,63 @@ internal class Day12Test {
         """.multiLineInputLines()
         )
         assertThat(result, `is`(19))
+    }
+
+    @Test
+    fun `test example 2 - 1`() {
+        val result = underTest.runPartTwo(
+            """
+            start-A
+            start-b
+            A-c
+            A-b
+            b-d
+            A-end
+            b-end
+        """.multiLineInputLines()
+        )
+        assertThat(result, `is`(36))
+    }
+
+    @Test
+    fun `test example 2 - 2`() {
+        val result = underTest.runPartTwo(
+            """
+                dc-end
+                HN-start
+                start-kj
+                dc-start
+                dc-HN
+                LN-dc
+                HN-end
+                kj-sa
+                kj-HN
+                kj-dc
+        """.multiLineInputLines()
+        )
+        assertThat(result, `is`(103))
+    }
+
+    @Test
+    fun `test simple lower 2-visits`() {
+        val tree = buildTree(
+            """
+            start-A
+            A-c
+            A-end
+        """.multiLineInputLines()
+        )
+        val paths = paths2(listOf(tree.root), tree.getNode("end")).map { path -> path.map { it.value } }
+        assertThat(
+            paths, `is`(
+                equalTo(
+                    listOf(
+                        listOf("start", "A", "c", "A", "c", "A", "end"),
+                        listOf("start", "A", "c", "A", "end"),
+                        listOf("start", "A", "end"),
+                    )
+                )
+            )
+        )
     }
 }
