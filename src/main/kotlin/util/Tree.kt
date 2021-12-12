@@ -14,7 +14,8 @@ class MutableTree<T>(val root: MutableNode<T>, private val nodes: List<MutableNo
 
     data class MutableNode<T>(val value: T, val next: MutableList<MutableNode<T>>) {
         fun addNext(nextNodes: List<MutableNode<T>>) {
-            next.addAll(nextNodes)
+            val filtered = nextNodes.filter { !next.contains(it) }
+            next.addAll(filtered)
         }
     }
 }

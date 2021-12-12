@@ -9,13 +9,15 @@ import org.junit.jupiter.api.Test
 import util.multiLineInputLines
 
 internal class Day12Test {
+    val underTest = Day12()
+
     @Test
     fun testSimpleTreePaths() {
         val tree = buildTree(
             """
             start-A
-            A-B
-            B-end
+            A-b
+            b-end
         """.multiLineInputLines()
         )
         val paths = paths(listOf(tree.root), tree.getNode("end")).map { path -> path.map { it.value } }
@@ -23,7 +25,7 @@ internal class Day12Test {
             paths, `is`(
                 equalTo(
                     listOf(
-                        listOf("start", "A", "B", "end")
+                        listOf("start", "A", "b", "end")
                     )
                 )
             )
@@ -57,13 +59,13 @@ internal class Day12Test {
     fun testSimpleMultiPathMultiSubPath() {
         val tree = buildTree(
             """
-            start-A
-            start-B
-            B-c
-            B-d
+            start-a
+            start-b
+            b-c
+            b-d
             c-end
             d-end
-            A-end
+            a-end
         """.multiLineInputLines()
         )
         val paths = paths(listOf(tree.root), tree.getNode("end")).map { path -> path.map { it.value } }
@@ -71,9 +73,9 @@ internal class Day12Test {
             paths, `is`(
                 equalTo(
                     listOf(
-                        listOf("start", "A", "end"),
-                        listOf("start", "B", "c", "end"),
-                        listOf("start", "B", "d", "end"),
+                        listOf("start", "a", "end"),
+                        listOf("start", "b", "c", "end"),
+                        listOf("start", "b", "d", "end"),
                     )
                 )
             )
@@ -128,5 +130,40 @@ internal class Day12Test {
                 )
             )
         )
+    }
+
+    @Test
+    fun `test example 1`() {
+        val result = underTest.runPartOne(
+            """
+            start-A
+            start-b
+            A-c
+            A-b
+            b-d
+            A-end
+            b-end
+        """.multiLineInputLines()
+        )
+        assertThat(result, `is`(10))
+    }
+
+    @Test
+    fun `test example 2`() {
+        val result = underTest.runPartOne(
+            """
+                dc-end
+                HN-start
+                start-kj
+                dc-start
+                dc-HN
+                LN-dc
+                HN-end
+                kj-sa
+                kj-HN
+                kj-dc
+        """.multiLineInputLines()
+        )
+        assertThat(result, `is`(19))
     }
 }

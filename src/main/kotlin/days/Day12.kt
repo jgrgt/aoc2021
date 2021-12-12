@@ -42,6 +42,9 @@ class Day12 : Day(12) {
                 val nextNodes = ends.map { end ->
                     nodes[end]!!
                 }
+                nextNodes.forEach {
+                    it.addNext(listOf(node))
+                }
                 node.addNext(nextNodes)
             }
             val start = nodes["start"]!!
@@ -54,6 +57,6 @@ class Day12 : Day(12) {
         val start = tree.root
         val end = tree.getNode("end")
         val endPaths = paths(listOf(start), end)
-        return 0
+        return endPaths.size
     }
 }
