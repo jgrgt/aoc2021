@@ -26,6 +26,17 @@ data class MutableMatrix<T>(
         }
     }
 
+    /**
+     * Create a NEW matrix, with each element passed through the argument mapper
+     */
+    fun <R> map(mapper: (T) -> R): MutableMatrix<R> {
+        return MutableMatrix(
+            items.map { row ->
+                row.map(mapper).toMutableList()
+            }.toMutableList()
+        )
+    }
+
     fun set(p: Point, value: T) {
         items[p.x][p.y] = value
     }

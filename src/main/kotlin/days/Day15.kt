@@ -9,8 +9,49 @@ class Day15 : Day(15) {
         val matrix = MutableMatrix.fromSingleDigits(lines) { c -> c.digitToInt() }
         val start = Point(0, 0)
         val optimal = aStar(matrix, start, matrix.max())
-//        val optimal = optimalPath(matrix, Path(listOf(start), 0), setOf(start), matrix.max())
-        return optimal!!.cost
+        return optimal.cost
+    }
+
+    override fun runPartTwo(lines: List<String>): Any {
+        val matrix = MutableMatrix.fromSingleDigits(lines) { c -> c.digitToInt() }
+        val megaMatrix = toMegaMatrix(matrix)
+        val start = Point(0, 0)
+        return aStar(megaMatrix, start, megaMatrix.max()).cost
+    }
+
+    fun toMegaMatrix(matrix: MutableMatrix<Int>): MutableMatrix<Int> {
+        val additions = listOf(
+            listOf(0, 1, 2, 3, 4),
+            listOf(1, 2, 3, 4, 5),
+            listOf(2, 3, 4, 5, 6),
+            listOf(3, 4, 5, 6, 7),
+            listOf(4, 5, 6, 7, 8),
+        )
+        val subMatrices = additions.map { row ->
+            row.map { incr -> matrix.map { max9(it + incr) } }.map { it.items }
+        }
+        val longRowLists = subMatrices.flatMap { subMatrixRow ->
+            toLongRows(subMatrixRow)
+        }
+        val megaMatrix = MutableMatrix(longRowLists.map {
+            it.toMutableList()
+        }.toMutableList())
+        return megaMatrix
+    }
+
+    fun toLongRows(subMatrixRow: List<List<List<Int>>>): List<List<Int>> {
+        return (0 until subMatrixRow[0].size).map {
+            val r = subMatrixRow.map { sm -> sm[it].toList() }
+            r.flatten()
+        }
+    }
+
+    private fun max9(n: Int): Int {
+        return if (n > 9) {
+            n - 9
+        } else {
+            n
+        }
     }
 
     /**
@@ -26,7 +67,7 @@ class Day15 : Day(15) {
         return xDistance * 1 + yDistance * 1 - 1 // 1 less for the corner/end itself
     }
 
-    fun aStar(matrix: MutableMatrix<Int>, start: Point, end: Point): Path? {
+    fun aStar(matrix: MutableMatrix<Int>, start: Point, end: Point): Path {
         // Basing myself on Wikipedia, because it's been a while...
         // https://en.wikipedia.org/wiki/A*_search_algorithm
         val openSet = mutableSetOf<Point>(start)
