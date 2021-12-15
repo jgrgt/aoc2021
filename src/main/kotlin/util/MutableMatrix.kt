@@ -55,6 +55,32 @@ data class MutableMatrix<T>(
             }
         }
     }
+
+    fun max(): Point {
+        return Point(items.size - 1, items[0].size - 1)
+    }
+
+    fun contains(point: Point): Boolean {
+        return !(point.x < 0 || point.y < 0 || point.x >= items.size || point.y >= items[0].size)
+    }
+
+    fun print(hightlight: (Point) -> Boolean) {
+        // Everything after this is in red
+        val red = "\u001b[31m"
+
+        // Resets previous color codes
+        val reset = "\u001b[0m"
+        items.forEachIndexed { x, row ->
+            val line = row.mapIndexed { y, value ->
+                if (hightlight(Point(x, y))) {
+                    red + value + reset
+                } else {
+                    value.toString()
+                }
+            }.joinToString(", ")
+            println(line)
+        }
+    }
 }
 
 data class Point(val x: Int, val y: Int) {
@@ -86,5 +112,9 @@ data class Point(val x: Int, val y: Int) {
 
     fun right(): Point {
         return Point(x + 1, y)
+    }
+
+    fun cross(): List<Point> {
+        return listOf(up(), down(), left(), right())
     }
 }
