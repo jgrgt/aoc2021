@@ -41,7 +41,7 @@ class Day15 : Day(15) {
             val current = openSet.minByOrNull { fScore.getValue(it) }!!
             if (current == end) {
                 val path = reconstructPath(cameFrom, current)
-                matrix.print(hightlight = { p -> path.contains(p)})
+                matrix.print(hightlight = { p -> path.contains(p) })
                 return Path(path, gScore[end]!!)
             }
 //            matrix.print(hightlight = { p -> p == current})
@@ -69,47 +69,5 @@ class Day15 : Day(15) {
         return path.reversed()
     }
 
-    fun optimalPath(matrix: MutableMatrix<Int>, path: Path, forbidden: Set<Point>, end: Point): Path? {
-        val current = path.lastPoint()
-//        val candidates = current.cross()
-        val candidates = listOf(current.right(), current.down())
-        if (candidates.contains(end)) {
-            return path.add(end, matrix.get(end))
-        }
-        val allowedCandidates = candidates.subtract(forbidden)
-            .filter { matrix.contains(it) } // Do not go where we already went, or to useless fields
-        if (allowedCandidates.isEmpty()) {
-            return null
-        }
-
-        return allowedCandidates.mapNotNull { next ->
-            val pointCost = matrix.getOrDefault(next)
-            if (pointCost == null) {
-                null
-            } else {
-                val newForbidden =
-                    forbidden + allowedCandidates // Since we now select one of the candidates, any other one is now a useless option since there's a more efficient path towards it...
-                optimalPath(
-                    // TODO could add some more forbiddens
-                    matrix, path.add(next, pointCost), newForbidden, end
-                )
-            }
-        }.minByOrNull { it.cost }
-    }
-
-    data class Path(val points: List<Point>, val cost: Int) {
-        fun lastPoint(): Point {
-            return points.last()
-        }
-
-        fun add(point: Point, pointCost: Int): Path {
-            return Path(points + point, cost + pointCost)
-        }
-
-        companion object {
-            fun empty(): Path {
-                return Path(emptyList(), 0)
-            }
-        }
-    }
+    data class Path(val points: List<Point>, val cost: Int)
 }
