@@ -23,7 +23,7 @@ class Day15 : Day(15) {
     fun heuristicCost(p: Point, end: Point): Int {
         val xDistance = abs(p.x - end.x)
         val yDistance = abs(p.y - end.y)
-        return xDistance * 9 + yDistance * 9 - 9 // 1 less for the corner/end itself
+        return xDistance * 1 + yDistance * 1 - 1 // 1 less for the corner/end itself
     }
 
     fun aStar(matrix: MutableMatrix<Int>, start: Point, end: Point): Path? {
@@ -44,6 +44,7 @@ class Day15 : Day(15) {
                 matrix.print(hightlight = { p -> path.contains(p)})
                 return Path(path, gScore[end]!!)
             }
+//            matrix.print(hightlight = { p -> p == current})
 
             openSet.remove(current)
             val neighbours = current.cross().filter { matrix.contains(it) }

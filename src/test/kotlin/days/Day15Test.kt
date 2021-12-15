@@ -26,6 +26,16 @@ class Day15Test {
     }
 
     @Test
+    fun `the first part of the example works`() {
+        val score = underTest.runPartOne(
+            """116
+               138
+               213""".multiLineInputLines()
+        )
+        assertThat(score, `is`(7))
+    }
+
+    @Test
     fun `starting simple`() {
         val score = underTest.runPartOne(
             """
