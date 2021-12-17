@@ -14,7 +14,7 @@ class Day5 : Day(5) {
         lines.forEach { line ->
             ground.add(line)
         }
-        val result = ground.map { _: Point, value: Int ->
+        val result = ground.map { _: Day5Point, value: Int ->
             if (value > 1) {
                 1
             } else {
@@ -26,10 +26,10 @@ class Day5 : Day(5) {
         return result
     }
 
-    fun findMaxPoint(lines: List<Line>) = lines.fold(Point(0, 0)) { acc, line ->
+    fun findMaxPoint(lines: List<Line>) = lines.fold(Day5Point(0, 0)) { acc, line ->
         val maxX = maxOf(line.a.x, line.b.x, acc.x)
         val maxY = maxOf(line.a.y, line.b.y, acc.y)
-        Point(maxX + 1, maxY + 1)
+        Day5Point(maxX + 1, maxY + 1)
     }
 
     fun parseLines(ls: List<String>) =
@@ -46,7 +46,7 @@ class Day5 : Day(5) {
         lines.forEach { line ->
             ground.add(line)
         }
-        val result = ground.map { _: Point, value: Int ->
+        val result = ground.map { _: Day5Point, value: Int ->
             if (value > 1) {
                 1
             } else {
@@ -59,7 +59,7 @@ class Day5 : Day(5) {
     }
 }
 
-data class Ground(val maxPoint: Point) {
+data class Ground(val maxPoint: Day5Point) {
     val ventLines = (0..maxPoint.y).map {
         (0..maxPoint.x).map {
             0
@@ -67,15 +67,15 @@ data class Ground(val maxPoint: Point) {
     }.toMutableList()
 
     fun add(line: Line) {
-        line.forEachPoint { p: Point ->
+        line.forEachPoint { p: Day5Point ->
             ventLines[p.y][p.x] += 1
         }
     }
 
-    fun <T> map(consumer: (Point, Int) -> T): List<T> {
+    fun <T> map(consumer: (Day5Point, Int) -> T): List<T> {
         return ventLines.flatMapIndexed { x, subList ->
             subList.mapIndexed { y, value ->
-                consumer.invoke(Point(x, y), value)
+                consumer.invoke(Day5Point(x, y), value)
             }
         }
     }
@@ -94,16 +94,16 @@ data class Ground(val maxPoint: Point) {
     }
 }
 
-data class Point(val x: Int, val y: Int) {
+data class Day5Point(val x: Int, val y: Int) {
     companion object {
-        fun from(s: String): Point {
+        fun from(s: String): Day5Point {
             val (x, y) = s.trim().split(",").map { it.trim().toInt() }
-            return Point(x, y)
+            return Day5Point(x, y)
         }
     }
 }
 
-data class Line(val a: Point, val b: Point) {
+data class Line(val a: Day5Point, val b: Day5Point) {
     // vertical is same x
     fun isVerticalSameX(): Boolean {
         return a.x == b.x
@@ -114,13 +114,13 @@ data class Line(val a: Point, val b: Point) {
         return a.y == b.y
     }
 
-    fun forEachPoint(consumer: (Point) -> Unit) {
+    fun forEachPoint(consumer: (Day5Point) -> Unit) {
         points().forEach {
             consumer.invoke(it)
         }
     }
 
-    fun points(): List<Point> {
+    fun points(): List<Day5Point> {
         val minX = minOf(a.x, b.x)
         val maxX = maxOf(a.x, b.x)
         val minY = minOf(a.y, b.y)
@@ -128,11 +128,11 @@ data class Line(val a: Point, val b: Point) {
 
         return if (maxX == minX) {
             (minY..maxY).map { y ->
-                (Point(maxX, y))
+                (Day5Point(maxX, y))
             }
         } else if (maxY == minY) {
             (minX..maxX).map { x ->
-                (Point(x, maxY))
+                (Day5Point(x, maxY))
             }
         } else {
             // Diagonal
@@ -149,7 +149,7 @@ data class Line(val a: Point, val b: Point) {
 
             val times = abs(a.x - b.x)
             (0..times).map { i ->
-                Point(a.x + xStep * i, a.y + yStep * i)
+                Day5Point(a.x + xStep * i, a.y + yStep * i)
             }
         }
     }
@@ -157,7 +157,7 @@ data class Line(val a: Point, val b: Point) {
     companion object {
         fun from(s: String): Line {
             val (pointAString, pointBString) = s.split(Regex.fromLiteral("->"))
-            return Line(Point.from(pointAString), Point.from(pointBString))
+            return Line(Day5Point.from(pointAString), Day5Point.from(pointBString))
         }
     }
 }

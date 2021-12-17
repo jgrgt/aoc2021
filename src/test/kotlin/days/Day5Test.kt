@@ -26,12 +26,12 @@ internal class Day5Test {
         assertThat(
             lines, `is`(
                 listOf(
-                    Line(Point(0, 9), Point(5, 9)),
-                    Line(Point(9, 4), Point(3, 4)),
-                    Line(Point(2, 2), Point(2, 1)),
-                    Line(Point(7, 0), Point(7, 4)),
-                    Line(Point(0, 9), Point(2, 9)),
-                    Line(Point(3, 4), Point(1, 4)),
+                    Line(Day5Point(0, 9), Day5Point(5, 9)),
+                    Line(Day5Point(9, 4), Day5Point(3, 4)),
+                    Line(Day5Point(2, 2), Day5Point(2, 1)),
+                    Line(Day5Point(7, 0), Day5Point(7, 4)),
+                    Line(Day5Point(0, 9), Day5Point(2, 9)),
+                    Line(Day5Point(3, 4), Day5Point(1, 4)),
                 )
             )
         )
@@ -39,8 +39,8 @@ internal class Day5Test {
 
     @Test
     fun testMaxPoint() {
-        val maxPoint = underTest.findMaxPoint(listOf(Line(Point(1, 4), Point(2, 1))))
-        assertThat(maxPoint, `is`(Point(2, 4)))
+        val maxPoint = underTest.findMaxPoint(listOf(Line(Day5Point(1, 4), Day5Point(2, 1))))
+        assertThat(maxPoint, `is`(Day5Point(2, 4)))
     }
 
     @Test
@@ -84,16 +84,16 @@ internal class Day5Test {
 
     @Test
     fun testDiagonal() {
-        val line = Line(Point(4, 1), Point(1, 4))
+        val line = Line(Day5Point(4, 1), Day5Point(1, 4))
         val points = line.points()
         assertThat(points.size, `is`(4))
         assertThat(
             points.toSet(), `is`(
                 setOf(
-                    Point(1, 4),
-                    Point(2, 3),
-                    Point(3, 2),
-                    Point(4, 1),
+                    Day5Point(1, 4),
+                    Day5Point(2, 3),
+                    Day5Point(3, 2),
+                    Day5Point(4, 1),
                 )
             )
         )
