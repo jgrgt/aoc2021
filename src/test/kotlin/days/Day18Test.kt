@@ -3,8 +3,10 @@ package days
 import days.Day18.Leaf
 import days.Day18.NumberPair
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
+import util.multiLineInputLines
 
 internal class Day18Test {
     @Test
@@ -28,7 +30,7 @@ internal class Day18Test {
     @Test
     fun `it can parse a double nested pair`() {
         val n = Day18.SnailFishNumber.parse("[[4,[1,8]],[6,3]]")
-        assertThat(n, `is`(NumberPair(NumberPair(Leaf(4), NumberPair(Leaf(1), Leaf(8))), NumberPair(Leaf(6),Leaf(3)))))
+        assertThat(n, `is`(NumberPair(NumberPair(Leaf(4), NumberPair(Leaf(1), Leaf(8))), NumberPair(Leaf(6), Leaf(3)))))
     }
 
     @Test
@@ -65,5 +67,62 @@ internal class Day18Test {
     fun `example 1`() {
         val result = Day18.SnailFishNumber.parse("[[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]]").reduce()
         assertThat(result, `is`(Day18.SnailFishNumber.parse("[[[[0,7],4],[[7,8],[6,0]]],[8,1]]")))
+    }
+
+    @Test
+    fun `example 2`() {
+        val result = Day18().runPartTwo(
+            """
+            [[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
+            [[[5,[2,8]],4],[5,[[9,9],0]]]
+            [6,[[[6,2],[5,6]],[[7,6],[4,7]]]]
+            [[[6,[0,7]],[0,9]],[4,[9,[9,0]]]]
+            [[[7,[6,4]],[3,[1,3]]],[[[5,5],1],9]]
+            [[6,[[7,3],[3,2]]],[[[3,8],[5,7]],4]]
+            [[[[5,4],[7,7]],8],[[8,3],8]]
+            [[9,3],[[9,9],[6,[4,9]]]]
+            [[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]
+            [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]
+        """.multiLineInputLines()
+        )
+        assertThat(result, `is`(3993))
+    }
+
+    @Test
+    fun `test generate pairs`() {
+        val lines = """
+            [[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]
+            [[[5,[2,8]],4],[5,[[9,9],0]]]
+            [6,[[[6,2],[5,6]],[[7,6],[4,7]]]]
+            [[[6,[0,7]],[0,9]],[4,[9,[9,0]]]]
+            [[[7,[6,4]],[3,[1,3]]],[[[5,5],1],9]]
+            [[6,[[7,3],[3,2]]],[[[3,8],[5,7]],4]]
+            [[[[5,4],[7,7]],8],[[8,3],8]]
+            [[9,3],[[9,9],[6,[4,9]]]]
+            [[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]
+            [[[[5,2],5],[8,[3,7]]],[[5,[7,5]],[4,4]]]
+        """.multiLineInputLines()
+        val n1 = Day18.SnailFishNumber.parse("[[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]")
+        val n2 = Day18.SnailFishNumber.parse("[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]")
+        val numbers = lines.map { Day18.SnailFishNumber.parse(it) }
+        val result = Day18().generateAllPairs(numbers)
+        assertThat(result.toList(), hasItem(n1 to n2))
+    }
+
+    @Test
+    fun `subtest example 2`() {
+        val n1 = Day18.SnailFishNumber.parse("[[2,[[7,7],7]],[[5,8],[[9,3],[0,2]]]]")
+        val n2 = Day18.SnailFishNumber.parse("[[[0,[5,8]],[[1,7],[9,6]]],[[4,[1,2]],[[1,4],2]]]")
+        val reduced = n1.add(n2).reduce()
+        assertThat(
+            reduced,
+            `is`(Day18.SnailFishNumber.parse("[[[[7,8],[6,6]],[[6,0],[7,7]]],[[[7,8],[8,8]],[[7,9],[0,6]]]]"))
+        )
+    }
+
+    @Test
+    fun `subtest example 2 magnitude`() {
+        val n = Day18.SnailFishNumber.parse("[[[[7,8],[6,6]],[[6,0],[7,7]]],[[[7,8],[8,8]],[[7,9],[0,6]]]]")
+        assertThat(n.magnitude(), `is`(3993))
     }
 }

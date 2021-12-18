@@ -9,6 +9,24 @@ class Day18 : Day(18) {
         }.magnitude()
     }
 
+    override fun runPartTwo(lines: List<String>): Any {
+        val numbers = lines.map { SnailFishNumber.parse(it) }
+        val pairs = generateAllPairs(numbers)
+        return pairs.maxOf { (l, r) -> l.add(r).reduce().magnitude() }
+    }
+
+    fun generateAllPairs(numbers: List<SnailFishNumber>): Sequence<Pair<SnailFishNumber, SnailFishNumber>> {
+        return sequence {
+            numbers.forEachIndexed { i, left ->
+                val others = numbers.drop(i + 1)
+                others.forEach { right ->
+                    yield(left to right)
+                    yield(right to left)
+                }
+            }
+        }
+    }
+
     sealed class SnailFishNumber {
         companion object {
             fun parse(s: String): SnailFishNumber {
