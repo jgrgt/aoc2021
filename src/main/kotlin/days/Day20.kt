@@ -17,7 +17,7 @@ class Day20 : Day(20) {
                 '.' -> 0
                 else -> error("Invalid character $c")
             }
-        }
+        }.surround(0).surround(0).surround(0).surround(0)
         val enhancedMatrix = enhance(matrix, mapping)
         enhancedMatrix.print { false }
         println()
@@ -27,7 +27,7 @@ class Day20 : Day(20) {
     }
 
     fun enhance(matrix: MutableMatrix<Int>, mapping: List<Int>): MutableMatrix<Int> {
-        val oldMatrix = matrix.surround(0).surround(0) // Surround with a double empty border
+        val oldMatrix = matrix
 
         val newMatrix = oldMatrix.clone()
         newMatrix.forEachPoint { p ->
