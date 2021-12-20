@@ -92,6 +92,26 @@ data class MutableMatrix<T>(
             println(line)
         }
     }
+
+    fun width(): Int {
+        return items[0].size
+    }
+
+    fun height(): Int {
+        return items.size
+    }
+
+    /**
+     * Surrounds this matrix with the argument elements. Single surround line. If you want multiple,
+     * call this method multiple times.
+     */
+    fun surround(value: T): MutableMatrix<T> {
+        val blankRow = List(width() + 2) { value }
+        val newItems = listOf(blankRow) + items.map {
+            listOf(value) + it + listOf(value)
+        } + listOf(blankRow)
+        return MutableMatrix(newItems.map { it.toMutableList() }.toMutableList())
+    }
 }
 
 data class Point(val x: Int, val y: Int) {
