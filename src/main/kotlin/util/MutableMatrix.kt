@@ -60,10 +60,24 @@ data class MutableMatrix<T>(
      * x
      */
     fun forEachPoint(consumer: (Point) -> Unit) {
-        (0..items.size).forEach { x ->
-            (0..items[0].size).forEach { y ->
+        (0 until items.size).forEach { x ->
+            (0 until items[0].size).forEach { y ->
                 consumer.invoke(Point(x, y))
             }
+        }
+    }
+
+    fun clone(): MutableMatrix<T> {
+        return MutableMatrix(
+            items.map {
+                it.toCollection(mutableListOf())
+            }.toMutableList()
+        )
+    }
+
+    fun setAll(value: T) {
+        forEachPoint { p ->
+            set(p, value)
         }
     }
 
@@ -102,6 +116,25 @@ data class MutableMatrix<T>(
     }
 
     /**
+     * Calls the consumer with the values in a 3x3 matrix around the argument point.
+     */
+    fun window(p: Point, consumer: (MutableMatrix<T>) -> Unit) {
+        consumer.invoke(MutableMatrix(mutableListOf(
+            mutableListOf(get(p.up().left()), get(p.up()), get(p.up().right())),
+            mutableListOf(get(p.left()), get(p), get(p.right())),
+            mutableListOf(get(p.down().left()), get(p.down()), get(p.down().right())),
+        )))
+    }
+
+    fun isOnEdge(p: Point): Boolean {
+        return p.x == 0 || p.y == 0 || p.x == items.size - 1 || p.y == items[0].size - 1
+    }
+
+    fun isNotOnEdge(p: Point): Boolean {
+        return !isOnEdge(p)
+    }
+
+    /**
      * Surrounds this matrix with the argument elements. Single surround line. If you want multiple,
      * call this method multiple times.
      */
@@ -111,6 +144,16 @@ data class MutableMatrix<T>(
             listOf(value) + it + listOf(value)
         } + listOf(blankRow)
         return MutableMatrix(newItems.map { it.toMutableList() }.toMutableList())
+    }
+
+    fun count(check: (T) -> Boolean): Int {
+        var count = 0
+        forEachPoint { p ->
+            if (check(get(p))) {
+                count += 1
+            }
+        }
+        return count
     }
 }
 
@@ -130,19 +173,19 @@ data class Point(val x: Int, val y: Int) {
     }
 
     fun up(): Point {
-        return Point(x, y - 1)
-    }
-
-    fun down(): Point {
-        return Point(x, y + 1)
-    }
-
-    fun left(): Point {
         return Point(x - 1, y)
     }
 
-    fun right(): Point {
+    fun down(): Point {
         return Point(x + 1, y)
+    }
+
+    fun left(): Point {
+        return Point(x, y - 1)
+    }
+
+    fun right(): Point {
+        return Point(x, y + 1)
     }
 
     fun cross(): List<Point> {
