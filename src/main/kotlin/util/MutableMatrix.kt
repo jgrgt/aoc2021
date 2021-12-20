@@ -89,7 +89,7 @@ data class MutableMatrix<T>(
         return !(point.x < 0 || point.y < 0 || point.x >= items.size || point.y >= items[0].size)
     }
 
-    fun print(hightlight: (Point) -> Boolean) {
+    fun printSep(sep: String, hightlight: (Point) -> Boolean) {
         // Everything after this is in red
         val red = "\u001b[31m"
 
@@ -102,9 +102,13 @@ data class MutableMatrix<T>(
                 } else {
                     value.toString()
                 }
-            }.joinToString(", ")
+            }.joinToString(sep)
             println(line)
         }
+    }
+
+    fun print(hightlight: (Point) -> Boolean) {
+        printSep(", ", hightlight)
     }
 
     fun width(): Int {
@@ -119,11 +123,31 @@ data class MutableMatrix<T>(
      * Calls the consumer with the values in a 3x3 matrix around the argument point.
      */
     fun window(p: Point, consumer: (MutableMatrix<T>) -> Unit) {
-        consumer.invoke(MutableMatrix(mutableListOf(
-            mutableListOf(get(p.up().left()), get(p.up()), get(p.up().right())),
-            mutableListOf(get(p.left()), get(p), get(p.right())),
-            mutableListOf(get(p.down().left()), get(p.down()), get(p.down().right())),
-        )))
+        consumer.invoke(
+            MutableMatrix(
+                mutableListOf(
+                    mutableListOf(get(p.up().left()), get(p.up()), get(p.up().right())),
+                    mutableListOf(get(p.left()), get(p), get(p.right())),
+                    mutableListOf(get(p.down().left()), get(p.down()), get(p.down().right())),
+                )
+            )
+        )
+    }
+
+    /**
+     * Calls the consumer with the values in a 3x3 matrix around the argument point.
+     */
+    fun windowOrDefault(p: Point, default: T, consumer: (MutableMatrix<T>) -> Unit) {
+        fun g(p: Point) = getOrDefault(p, default)!!
+        consumer.invoke(
+            MutableMatrix(
+                mutableListOf(
+                    mutableListOf(g(p.up().left()), g(p.up()), g(p.up().right())),
+                    mutableListOf(g(p.left()), g(p), g(p.right())),
+                    mutableListOf(g(p.down().left()), g(p.down()), g(p.down().right())),
+                )
+            )
+        )
     }
 
     fun isOnEdge(p: Point): Boolean {
@@ -155,6 +179,27 @@ data class MutableMatrix<T>(
         }
         return count
     }
+
+    /**
+     * String 1 border from the matrix, returns a new matrix
+     */
+    fun unsurround(): MutableMatrix<T> {
+        return MutableMatrix(
+            items.slice(1 until items.size - 1)
+                .map { row ->
+                    row.slice(1 until row.size - 1).toMutableList()
+                }
+                .toMutableList()
+        )
+    }
+
+    override fun toString(): String {
+        return items.map { row ->
+            row.joinToString { it.toString() }
+        }.joinToString("\n")
+    }
+
+
 }
 
 data class Point(val x: Int, val y: Int) {

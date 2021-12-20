@@ -116,4 +116,16 @@ internal class MutableMatrixTest {
             )
         )
     }
+
+    fun `it can unsurround`() {
+        val original = MutableMatrix(
+            mutableListOf(
+                mutableListOf(1, 2, 3),
+                mutableListOf(4, 5, 6),
+                mutableListOf(7, 8, 9),
+            )
+        )
+        val actual = original.unsurround()
+        assertThat(actual, `is`(MutableMatrix(mutableListOf(mutableListOf(5)))))
+    }
 }

@@ -1,45 +1,66 @@
 package days
 
 import util.MutableMatrix
+import util.Point
 
 class Day20 : Day(20) {
     override fun runPartOne(lines: List<String>): Any {
-        val mapping = lines[0].map { c ->
+        val mapping = parseMapping(lines[0])
+        val matrix = parseMatrix(lines.drop(2)).surround(0)
+            .surround(0)
+            .surround(0)
+            .surround(0)
+        val enhancedMatrix = enhance(matrix, mapping)
+        enhancedMatrix.printSep("") { false }
+        println()
+        println()
+        println()
+        val fixedEnhanced = enhancedMatrix
+            .unsurround()
+            .surround(mapping[0])
+        fixedEnhanced.printSep("") { false }
+
+        println()
+        println()
+        println()
+        val doubleEnhancedMatrix = enhance(
+            fixedEnhanced,
+            mapping
+        )
+        doubleEnhancedMatrix.printSep("") { false }
+        return doubleEnhancedMatrix.unsurround().count { it == 1 }
+    }
+
+    fun parseMatrix(lines: List<String>) =
+        MutableMatrix.fromSingleDigits(lines) { c ->
             when (c) {
                 '#' -> 1
                 '.' -> 0
                 else -> error("Invalid character $c")
             }
         }
-        val matrix = MutableMatrix.fromSingleDigits(lines.drop(2)) { c ->
-            when (c) {
-                '#' -> 1
-                '.' -> 0
-                else -> error("Invalid character $c")
-            }
-        }.surround(0).surround(0).surround(0).surround(0)
-        val enhancedMatrix = enhance(matrix, mapping)
-        enhancedMatrix.print { false }
-        println()
-        val doubleEnhancedMatrix = enhance(enhancedMatrix, mapping)
-        doubleEnhancedMatrix.print { false }
-        return doubleEnhancedMatrix.count { it ==  1}
+
+    fun parseMapping(line: String) = line.map { c ->
+        when (c) {
+            '#' -> 1
+            '.' -> 0
+            else -> error("Invalid character $c")
+        }
     }
 
     fun enhance(matrix: MutableMatrix<Int>, mapping: List<Int>): MutableMatrix<Int> {
-        val oldMatrix = matrix
-
-        val newMatrix = oldMatrix.clone()
-        newMatrix.forEachPoint { p ->
-            if (oldMatrix.isNotOnEdge(p)) {
-                oldMatrix.window(p) { m ->
-                    val bits = m.items[0] + m.items[1] + m.items[2]
-                    check(bits.size == 9)
-                    val index = bits.joinToString("").toInt(2)
-                    newMatrix.set(p, mapping[index])
-                }
+        val newMatrix = matrix.clone()
+        val default = matrix.get(Point(0, 0))
+        println("Using default $default")
+        matrix.forEachPoint { p ->
+            matrix.windowOrDefault(p, default) { m ->
+                val bits = m.items[0] + m.items[1] + m.items[2]
+                check(bits.size == 9)
+                val index = bits.joinToString("").toInt(2)
+                val mapped = mapping[index]
+                newMatrix.set(p, mapped)
             }
         }
-        return newMatrix
+        return newMatrix.surround(0)
     }
 }
