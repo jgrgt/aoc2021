@@ -7,9 +7,6 @@ class Day20 : Day(20) {
     override fun runPartOne(lines: List<String>): Any {
         val mapping = parseMapping(lines[0])
         val matrix = parseMatrix(lines.drop(2)).surround(0)
-            .surround(0)
-            .surround(0)
-            .surround(0)
         val enhancedMatrix = enhance(matrix, mapping)
         enhancedMatrix.printSep("") { false }
         println()
@@ -29,6 +26,28 @@ class Day20 : Day(20) {
         )
         doubleEnhancedMatrix.printSep("") { false }
         return doubleEnhancedMatrix.unsurround().count { it == 1 }
+    }
+
+    override fun runPartTwo(lines: List<String>): Any {
+        val mapping = parseMapping(lines[0])
+        val matrix = parseMatrix(lines.drop(2)).surround(0)
+        var enhancedMatrix = enhance(matrix, mapping)
+        repeat(49) {
+            // first time is 0, should give 1
+            val default = if (it % 2 == 0) {
+                mapping[0]
+            } else {
+                0
+            }
+            val fixedEnhanced = enhancedMatrix
+                .unsurround()
+                .surround(default)
+            enhancedMatrix = enhance(
+                fixedEnhanced,
+                mapping
+            )
+        }
+        return enhancedMatrix.unsurround().count { it == 1 }
     }
 
     fun parseMatrix(lines: List<String>) =
