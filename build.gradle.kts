@@ -22,6 +22,7 @@ dependencies {
     testImplementation("org.junit.jupiter", "junit-jupiter-engine", "5.8.1")
     testImplementation("org.junit.jupiter", "junit-jupiter-params", "5.8.1")
     testImplementation("org.hamcrest", "hamcrest", "2.2")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 }
 
 tasks.withType<KotlinCompile> {

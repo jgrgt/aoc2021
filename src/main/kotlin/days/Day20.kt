@@ -30,11 +30,11 @@ class Day20 : Day(20) {
         val oldMatrix = matrix.surround(0).surround(0) // Surround with a double empty border
 
         val newMatrix = oldMatrix.clone()
-        newMatrix.setAll(0) // Not really needed I guess
         newMatrix.forEachPoint { p ->
             if (oldMatrix.isNotOnEdge(p)) {
                 oldMatrix.window(p) { m ->
                     val bits = m.items[0] + m.items[1] + m.items[2]
+                    check(bits.size == 9)
                     val index = bits.joinToString("").toInt(2)
                     newMatrix.set(p, mapping[index])
                 }
