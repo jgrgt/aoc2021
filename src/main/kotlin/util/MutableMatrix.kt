@@ -41,8 +41,27 @@ data class MutableMatrix<T>(
         items[p.x][p.y] = value
     }
 
+    fun setWrapping(p: Point, value: T) {
+        val wrapped = this.wrap(p)
+        items[wrapped.x][wrapped.y] = value
+    }
+
+    private fun wrap(p: Point): Point {
+        val x = p.x % height()
+        val y = p.y % width()
+        return Point(x, y)
+    }
+
     fun get(p: Point): T {
         return items[p.x][p.y]
+    }
+
+    /**
+     * Like get, but wraps around...
+     */
+    fun getWrapping(p: Point): T {
+        val wrapped = this.wrap(p)
+        return items[wrapped.x][wrapped.y]
     }
 
     fun getOrDefault(point: Point, default: T? = null): T? {
@@ -109,6 +128,13 @@ data class MutableMatrix<T>(
 
     fun print(hightlight: (Point) -> Boolean) {
         printSep(", ", hightlight)
+    }
+
+    fun printTransformed(mapper: (T) -> String) {
+        items.forEach { row ->
+            val line = row.joinToString("") { value -> mapper.invoke(value) }
+            println(line)
+        }
     }
 
     fun width(): Int {
@@ -198,8 +224,6 @@ data class MutableMatrix<T>(
             row.joinToString { it.toString() }
         }.joinToString("\n")
     }
-
-
 }
 
 data class Point(val x: Int, val y: Int) {
